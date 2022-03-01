@@ -1,28 +1,31 @@
-import { assertEquals } from "https://deno.land/std@0.127.0/testing/asserts.ts"
+import { assertEquals } from "https://deno.land/std@0.127.0/testing/asserts.ts";
 
-import { Expect, Equal } from "./test_utils.ts";
-import { Camelize, CamelizeDeep, camelize, camelizeDeep } from "./mod.ts";
+import { Equal, Expect } from "./test_utils.ts";
+import { Camelize, camelize, CamelizeDeep, camelizeDeep } from "./mod.ts";
 
 // Type Checks
 type cases = [
   Expect<Equal<Camelize<"id">, "id">>,
   Expect<Equal<Camelize<"user_id">, "userId">>,
   Expect<Equal<Camelize<"test-company-123">, "testCompany123">>,
-  Expect<Equal<CamelizeDeep<{ user_id: string; }>, { userId: string; }>>,
-  Expect<Equal<
-    CamelizeDeep<{
-      id: number;
-      bookings: {
-        booking_id: number;
-        is_confirmed: boolean;
-      }[];
-    }>, {
-      id: number;
-      bookings: {
-        bookingId: number;
-        isConfirmed: boolean;
-      }[];
-    }>
+  Expect<Equal<CamelizeDeep<{ user_id: string }>, { userId: string }>>,
+  Expect<
+    Equal<
+      CamelizeDeep<{
+        id: number;
+        bookings: {
+          booking_id: number;
+          is_confirmed: boolean;
+        }[];
+      }>,
+      {
+        id: number;
+        bookings: {
+          bookingId: number;
+          isConfirmed: boolean;
+        }[];
+      }
+    >
   >,
 ];
 
@@ -54,5 +57,5 @@ assertEquals(
         isConfirmed: false,
       },
     ],
-  }
+  },
 );
