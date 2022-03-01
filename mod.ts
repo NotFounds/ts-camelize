@@ -18,9 +18,11 @@ export const camelize = (str: string) => {
 export const camelizeDeep = <T extends string | Record<string, any>>(obj: T): T extends string ? string : CamelizeDeep<T> => {
   return typeof obj === "string"
     ? camelize(obj)
+  : typeof obj !== "object"
+    ? obj
   : Array.isArray(obj)
     ? obj.map(camelizeDeep)
-  : Object.keys(obj).reduce(acc, key) => {
+  : Object.keys(obj).reduce((acc, key) => {
     const camelizedKey = camelize(key);
     acc[camelizedKey] = camelizeDeep(obj[key]);
     return acc;
