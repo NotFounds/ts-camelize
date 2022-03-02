@@ -49,6 +49,7 @@ Deno.test("camelizeDeep: Object with Array", () => {
           is_confirmed: false,
         },
       ],
+      created_at: "2022-01-01T00:00:00.000",
     }),
     {
       userId: 123,
@@ -62,6 +63,7 @@ Deno.test("camelizeDeep: Object with Array", () => {
           isConfirmed: false,
         },
       ],
+      createdAt: "2022-01-01T00:00:00.000",
     },
   );
 });
