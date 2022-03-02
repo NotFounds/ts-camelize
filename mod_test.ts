@@ -30,32 +30,49 @@ type cases = [
 ];
 
 // Conversion Checks
-assertEquals(camelize("abc_def-ghi.j123"), "abcDefGhiJ123");
-assertEquals(
-  camelizeDeep({
-    user_id: 123,
-    bookings: [
-      {
-        booking_id: 1,
-        is_confirmed: true,
-      },
-      {
-        booking_id: 2,
-        is_confirmed: false,
-      },
-    ],
-  }),
-  {
-    userId: 123,
-    bookings: [
-      {
-        bookingId: 1,
-        isConfirmed: true,
-      },
-      {
-        bookingId: 2,
-        isConfirmed: false,
-      },
-    ],
-  },
-);
+Deno.test("camelize", () => {
+  const camelized = camelize("abc_def-ghi.j123");
+  assertEquals(camelized, "abcDefGhiJ123");
+});
+
+Deno.test("camelizeDeep: Object with Array", () => {
+  assertEquals(
+    camelizeDeep({
+      user_id: 123,
+      bookings: [
+        {
+          booking_id: 1,
+          is_confirmed: true,
+        },
+        {
+          booking_id: 2,
+          is_confirmed: false,
+        },
+      ],
+    }),
+    {
+      userId: 123,
+      bookings: [
+        {
+          bookingId: 1,
+          isConfirmed: true,
+        },
+        {
+          bookingId: 2,
+          isConfirmed: false,
+        },
+      ],
+    },
+  );
+});
+
+Deno.test("camelizeDeep: Object with Date instance", () => {
+  assertEquals(
+    camelizeDeep({
+      created_at: new Date("2022-01-31T12:00:00.000"),
+    }),
+    {
+      createdAt: new Date("2022-01-31T12:00:00.000"),
+    },
+  );
+});

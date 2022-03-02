@@ -6,29 +6,37 @@ export type Camelize<S extends string> = S extends
 
 export type CamelizeDeep<T> = T extends string ? Camelize<T>
   : T extends Array<infer U> ? Array<CamelizeDeep<U>>
-  : // deno-lint-ignore no-explicit-any
-  T extends Record<string, any>
+  : T extends Record<string, unknown>
     ? { [K in keyof T as Camelize<K & string>]: CamelizeDeep<T[K]> }
   : T;
+
+// Determines an object is a class object or not.
+const isPlainObject = (
+  obj: unknown,
+): obj is Record<string | symbol | number, unknown> => {
+  const prototype = Object.getPrototypeOf(obj);
+  return typeof obj === "object" &&
+    (prototype === null || prototype.constructor === Object);
+};
 
 export const camelize = (str: string) => {
   return str.replace(/[_.-](\w|$)/g, (_, x) => x.toUpperCase());
 };
 
-// deno-lint-ignore no-explicit-any
-export const camelizeDeep = <T extends string | Record<string, any>>(
+export const camelizeDeep = <T extends unknown>(
   obj: T,
 ): T extends string ? string : CamelizeDeep<T> => {
   return typeof obj === "string"
     ? camelize(obj)
-    : typeof obj !== "object"
-    ? obj
     : Array.isArray(obj)
     ? obj.map(camelizeDeep)
-    : Object.keys(obj).reduce((acc, key) => {
-      const camelizedKey = camelize(key);
-      acc[camelizedKey] = camelizeDeep(obj[key]);
-      return acc;
-      // deno-lint-ignore no-explicit-any
-    }, {} as any);
+    : // NOTE: Eliminate class instances like Date, Set, RegExp, etc.
+      !isPlainObject(obj)
+      ? obj
+      : Object.keys(obj).reduce((acc, key) => {
+        const camelizedKey = camelize(key);
+        acc[camelizedKey] = camelizeDeep(obj[key]);
+        return acc;
+        // deno-lint-ignore no-explicit-any
+      }, {} as any);
 };
