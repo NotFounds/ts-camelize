@@ -26,8 +26,7 @@ export const camelize = (str: string) => {
 export const camelizeDeep = <T extends unknown>(
   obj: T,
 ): T extends string ? string : CamelizeDeep<T> => {
-  return Array.isArray(obj) ? obj.map(camelizeDeep) : // NOTE: Eliminate class instances like Date, Set, RegExp, etc.
-    !isPlainObject(obj)
+  return Array.isArray(obj) ? obj.map(camelizeDeep) : !isPlainObject(obj) // Eliminate class instances like Date, Set, RegExp, etc.
     ? obj
     : Object.keys(obj).reduce((acc, key) => {
       const camelizedKey = camelize(key);
