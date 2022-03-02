@@ -1,3 +1,4 @@
+// deno-lint-ignore-file
 // MIT License
 //
 // Copyright (c) 2020 Anthony Fu <https://github.com/antfu>

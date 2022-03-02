@@ -6,6 +6,7 @@ export type Camelize<S extends string> = S extends
 
 export type CamelizeDeep<T> = T extends string ? Camelize<T>
   : T extends Array<infer U> ? Array<CamelizeDeep<U>>
+  // deno-lint-ignore no-explicit-any
   : T extends Record<string, any>
     ? { [K in keyof T as Camelize<K & string>]: CamelizeDeep<T[K]> }
   : T;
@@ -14,6 +15,7 @@ export const camelize = (str: string) => {
   return str.replace(/[_.-](\w|$)/g, (_, x) => x.toUpperCase());
 };
 
+// deno-lint-ignore no-explicit-any
 export const camelizeDeep = <T extends string | Record<string, any>>(
   obj: T,
 ): T extends string ? string : CamelizeDeep<T> => {
@@ -27,5 +29,6 @@ export const camelizeDeep = <T extends string | Record<string, any>>(
       const camelizedKey = camelize(key);
       acc[camelizedKey] = camelizeDeep(obj[key]);
       return acc;
+    // deno-lint-ignore no-explicit-any
     }, {} as any);
 };
